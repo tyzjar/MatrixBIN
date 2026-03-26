@@ -1,0 +1,38 @@
+#ifndef _SCALED_CONFIG_H_INCLUDED
+#define _SCALED_CONFIG_H_INCLUDED
+
+#define	CONFIG_FUNCTION_RETURN_OK	0
+#define	CONFIG_FUNCTION_RETURN_ERR	-1
+
+#define	CONFIG_ERROR_NOT_ERROR			0x0000
+#define	CONFIG_ERROR_FILE_NOT_SPECIFIED	0x1001
+#define	CONFIG_ERROR_FILE_ERROR			0x1002
+#define	CONFIG_ERROR_PARSE				0x1003
+#define	CONFIG_ERROR_PARSE_SECTION		0x1004
+#define	CONFIG_ERROR_RETURN_CODE		0x1005
+#define	CONFIG_ERROR_ACEESS_DEVICE		0x1006
+//<MJK
+#define	CONFIG_ERROR_MEMORY_LACK		0x1007
+//>
+
+enum estatus {
+    STATUS_STABLE = 0,
+    STATUS_UNSTABLE,
+    STATUS_OVERLOAD,
+    STATUS_UNDERLOAD
+};
+
+enum egross {
+    GROSS = 0,
+    NET
+};
+
+enum eunit {
+    Kg = 0,
+    g
+};
+
+extern int loadConfig(const char* fileName, int* iError);
+
+#endif
+

@@ -1,0 +1,30 @@
+I have a Linux USB HID device (a Hama MCE), and I can read its events manually by reading cat /dev/input/event7 and cat /dev/input/event8.
+Whenever I press a key on the device, a few bytes become available for reading with one of the cat commands above. 
+I have a default installation of Ubuntu Jaunty 64-bit desktop on the machine.
+
+I think I can write a parser to interpret the bytes emitted by the device, or I'll use libhid if it's more convenient.
+
+My questions are:
+
+    How do I prevent the text-mode virtual consoles from receiving some of the key presses on the device as normal keypresses? As of now, some device keys result an Enter, a BackSpace, a PageUp or numeric keypad numbers.
+    Similarly, how do I prevent the X server from receiving keyboard and mouse events from this device? I have several USB keyboards and mice connected to the computer. I want the X server receive events from all of them, except for this device.
+    How do I set up that whenever the device gets connected to the computer, the command /usr/local/bin/keydumper /dev/input/event7 /dev/input/event8 (or one command for each /dev/ path) would get run, with the proper /dev/ paths substituted in the command line?
+
+//linuxkeyboardmouseusbhid
+
+
+Answering my own question based on answers from the Linux USB HID driver developers:
+
+Question 1. and 2.: Do
+
+ioctl(open("/dev/input/event7", O_RDONLY), EVIOCGRAB, 1);
+
+As long as this filehandle is open, the events generated would go only to this filehandle (not to other open()s of the same device or to the system keyboard or mouse event pool). At most one process can hold a successful EVIOCGRAB at a HID device at a time. Lirc can be configured to do an EVIOCGRAB.
+
+Question 3.: Configure udev to start the program once the device is connected.
+
+If you are looking for the definition of EVIOCGRAB try
+
+    #include <linux/input.h>
+
+

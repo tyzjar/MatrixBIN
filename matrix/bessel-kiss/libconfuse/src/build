@@ -1,0 +1,4 @@
+flex -Pcfg_yy -olexer.c lexer.l
+gcc -I. -Wall -DHAVE_CONFIG_H -DHAVE_STRCASECMP -c lexer.c
+gcc -I. -Wall -DHAVE_CONFIG_H -DHAVE_STRCASECMP -c confuse.c
+ar rc libconfuse.a confuse.o lexer.o

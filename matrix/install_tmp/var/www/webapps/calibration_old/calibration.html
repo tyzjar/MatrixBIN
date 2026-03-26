@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Калибровка</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="description" content="Калибровка" />
+	<meta name="keywords" content="Калибровка" />
+    <link rel="stylesheet" href="css/calibration.css">
+	<script src="scripts/jquery-3.7.1.min.js"></script>	
+	<script src="scripts/paho-mqtt.js"></script>	
+	<script src="scripts/calibration.js"></script>	
+</head>
+
+<body>
+	<div class="parameters">
+        <label id="l_device" class="name">Устройство:</label>
+		<select id="device" name="device">
+            <option value="-1" selected="selected">-1: канал не выбран</option>
+		</select>
+	</div>
+    <form id="form_WeightStatus" name="form_WeightStatus" action="" method="post" enctype="multipart/form-data">
+	    <fieldset id="fs_WeightStatus">
+			<legend>Текущий вес</legend>
+			<div class="parameters">
+                <label class="name">Нетто:</label>
+                <input id="Net" class="i_field" type="text" value="0.000" disabled="disabled" />
+            </div>
+			<div class="clear"></div>
+			<div class="parameters">
+                <label class="name">Брутто:</label>
+                <input id="Brutto" class="i_field" type="text" value="0.000" disabled="disabled" />
+            </div>
+			<div class="clear"></div>
+			<div id="val_GS" class="parameters">
+                <label class="name">Отсчеты:</label>
+                <input class="i_field" type="text" value="00000" disabled="disabled" />
+            </div>
+			<div class="clear"></div>
+			<div class="parameters">
+                <label class="name">Стабильность сигнала:</label>
+                <input id="isMotion" class="i_field_stable" type="text" value="" disabled="disabled" />
+			</div>
+		</fieldset>
+<!--
+	    <fieldset>
+			<legend>Калибровка</legend>
+			<div class="parameters">
+                <label class="name">Счетчик калибровок:</label>
+                <input class="i_field" type="text" value="0" disabled="disabled" />
+            </div>
+		</fieldset>
+-->		
+	</form>
+
+    <form id="form_FilterMotion" name="form_FilterMotion" action="" method="post" enctype="multipart/form-data">
+	    <fieldset>
+			<legend>Фильтры и стабильность</legend>
+			<div class="parameters">
+                <label id="l_FM" class="name">FM - Тип фильтра:</label>
+				<select id="filter_mode" name="filter_mode">
+                    <option value="0" selected="selected">0: IIR</option>
+                    <option value="1">1: FIR</option>
+				</select>
+             </div>
+			<div class="clear"></div>
+			<div class="parameters">
+                <label id="l_FL" class="name">FL - Частота среза (Гц):</label>
+				<select id="filter_value" name="filter_value">
+                    <option value="1" selected="selected">1: 18Hz</option>
+                    <option value="2">2: 8Hz</option>
+                    <option value="3">3: 4Hz</option>
+                    <option value="4">4: 3Hz</option>
+                    <option value="5">5: 2Hz</option>
+                    <option value="6">6: 1Hz</option>
+                    <option value="7">7: 0.5Hz</option>
+                    <option value="8">8: 0.25Hz</option>
+				</select>
+             </div>
+			<div class="clear"></div>
+
+
+			<div id="val_NR" class="parameters">
+                <label id="l_NR" class="name">NR - Стабильность (кол. d):</label>
+                <input class="i_field" type="text" value="0" />
+            </div>
+			<div class="clear"></div>
+
+			<div id="val_NT" class="parameters">
+                <label id="l_NT" class="name">NT - Период стабильности (мс):</label>
+                <input class="i_field" type="text" value="0" />
+            </div>
+			<div class="clear"></div>
+
+			<div class="parameters">
+				<div id="FM_Write" class="button">Установить</div>
+				<div id="FM_Save" class="button">Сохранить</div>
+            </div>
+			<div class="clear"></div>
+		</fieldset>
+	</form>
+	
+	<form id="form_CalibrationParameters" name="form_CalibrationParameters" action="" method="post" enctype="multipart/form-data">
+	    <fieldset>
+			<legend>Калибровочные параметры</legend>
+			
+			<div class="parameters_2">
+				<label id="l_AZ" class="name">Абсолютный "Ноль" (мВ/В):</label>
+                <input class="i_field" type="text" value="0" />
+            </div>
+
+			<div id="val_CI" class="parameters">
+				<label id="l_CI" class="name">CI - Недогруз (-9d - обычно):</label>
+                <input class="i_field" type="text" value="0" />
+            </div>
+			<div class="clear"></div>
+
+			<div class="parameters_2">
+				<label id="l_AG" class="name">AG - Коэф.усиления (мВ/В):</label>
+                <input class="i_field" type="text" value="0" />
+            </div>
+
+			<div id="val_CM1" class="parameters">
+				<label id="l_CM1" class="name">CM1 - Граница диап.№1 (Max1=1...99999 d):</label>
+                <input class="i_field" type="text" value="0" />
+            </div>
+			<div class="clear"></div>
+
+			<div class="parameters_2">
+				<label id="l_AGD" class="name">AG - Absolute Gain Display:</label>
+                <input class="i_field" type="text" value="0" />
+            </div>
+			<div id="val_CM2" class="parameters">
+				<label id="l_CM2" class="name">CM2 - Граница диап.№2 (Max2=Max1...99999 d):</label>
+                <input class="i_field" type="text" value="0" />
+            </div>
+			<div class="clear"></div>
+
+			<div class="parameters_2">
+                <label id="l_DP" class="name">DP - Позиция десятичной точки:</label>
+				<select id="decimal_point" name="decimal_point">
+                    <option value="0">0: Вид 123456</option>
+                    <option value="1">1: Вид 12345.6</option>
+                    <option value="2">2: Вид 1234.56</option>
+                    <option value="3" selected="selected">3: Вид 123.456</option>
+                    <option value="4">4: Вид 12.3456</option>
+                    <option value="5">5: Вид 1.23456</option>
+				</select>
+             </div>
+			<div id="val_CM3" class="parameters">
+				<label id="l_CM3" class="name">CM3 - Граница диап.№3 (Max3=Max2...99999 d):</label>
+                <input class="i_field" type="text" value="0" />
+            </div>
+			<div class="clear"></div>
+
+			<div class="parameters_2">
+                <label id="l_DS" class="name">DS - Дискретность отображения:</label>
+				<select id="display_step" name="display_step">
+                    <option value="1">1 отсчет</option>
+                    <option value="2">2 отсчета</option>
+                    <option value="5">5 отсчетов</option>
+                    <option value="10">10 отсчетов</option>
+                    <option value="20">20 отсчетов</option>
+                    <option value="50">50 отсчетов</option>
+                    <option value="100">100 отсчетов</option>
+                    <option value="200">200 отсчетов</option>
+				</select>
+             </div>
+			<div id="val_ZI" class="parameters">
+				<label id="l_ZI" class="name">ZI - Диап.автомат.обнуления (0...99999d):</label>
+                <input class="i_field" type="text" value="0" />
+            </div>
+			<div class="clear"></div>
+
+			<div class="parameters_2">
+                <label id="l_MR" class="name">MR - Многодиапазонный режим:</label>
+				<select id="multi_range" name="multi_range">
+                    <option value="0" selected="selected">0:Многоинтервальный</option>
+                    <option value="1">1: Многодиапазонный</option>
+ 				</select>
+             </div>
+			<div id="val_ZR" class="parameters">
+				<label id="l_ZR" class="name">ZR - Диап.обнуления по кнопке (+/-2%Max):</label>
+                <input class="i_field" type="text" value="0" />
+            </div>
+			<div class="clear"></div>
+<!--
+			<div class="parameters_2">
+                <label id="l_TN" class="name">TN - Tare Volatile:</label>
+				<select id="tare_volatile" name="tare_volatile">
+                    <option value="0" selected="selected">0:    Volatile</option>
+                    <option value="1">1:</option>
+ 				</select>
+             </div>
+
+			<div class="parameters">
+                <label id="l_TM" class="name">TM - Tare Mode:</label>
+                <input class="i_field" type="text" value="0" />
+            </div>
+			<div class="clear"></div>
+-->
+<!--
+			<div class="parameters_2">
+                <label id="l_ZN" class="name">ZN - Zero Volatile:</label>
+				<select id="zero_volatile" name="zero_volatile">
+                    <option value="0" selected="selected">0: Volatile</option>
+                    <option value="1">1:</option>
+ 				</select>
+             </div>
+			<div class="parameters">
+                <label id="l_ZM" class="name">TZ - Zero Mode:</label>
+                <input class="i_field" type="text" value="0" />
+            </div>
+			<div class="clear"></div>
+-->
+			<div class="parameters_2">
+                <label id="l_FT" class="name">FT - Firmware:</label>
+				<select id="firmware" name="firmware">
+                    <option value="0" selected="selected">0: Standart</option>
+                    <option value="1">1: Filling</option>
+                    <option value="2">2: Mass Flow</option>
+                    <option value="3">1: Drop Filling</option>
+ 				</select>
+             </div>
+
+			<div id="val_ZT" class="parameters">
+                <label id="l_ZT" class="name">ZT - Слежение за нулем (Вкл./Выкл.):</label>
+                <input class="i_field" type="text" value="0" />
+            </div>
+			<div class="clear"></div>
+
+			<div class="parameters">
+				<div id="b_CP_Write" class="button">Записать параметры</div>
+            </div>
+			
+		</fieldset>
+
+		<div id="cnt_calibration" class="parameters">
+            <label id="l_cnt_calibration" class="name">Счетчик калибровок:</label>
+            <input class="i_field" type="text" value="0" disabled="disabled" />
+        </div>
+
+		<div id="b_SaveCalibration" class="button">CS - Сохранить калибровку</div>
+	</form>
+	
+	<div class="clear"></div>
+
+	<form id="form_CalibrateScale" name="form_CalibrateScale" action="" method="post" enctype="multipart/form-data">
+	    <fieldset>
+			<legend>Калибровка измерительного канала</legend>
+			<div id="val_CG" class="parameters_2">
+                <label id="l_Span" class="name">Масса калибровочного груза (d):</label>
+                <input class="i_field" type="text" value="0" />
+			</div>
+			<div class="parameters">
+				<div id="b_CZ" class="button">CZ - Калибровать "Ноль"</div>
+            </div>
+			<div class="clear"></div>
+
+			<div class="parameters_2">
+                <label id="l_MinSpan" class="name">Мин.допустимый диап. калибровки:</label>
+				<select id="min_span" name="min_span">
+                    <option value="1" selected="selected">1%</option>
+                    <option value="2">%2</option>
+                    <option value="2">%3</option>
+                    <option value="4">%4</option>
+                    <option value="5">%5</option>
+ 				</select>
+            </div>
+			<div class="parameters">
+				<div id="b_CG" class="button">CG - Калибровать нагрузку</div>
+            </div>
+			<div class="clear"></div>
+
+			<div class="parameters_2">
+				<div id="info_calib"></div>
+            </div>
+			<div class="parameters">
+				<div id="b_IZ" class="button">IZ - Скорректировать ноль</div>
+            </div>
+			<div class="clear"></div>
+		</fieldset>
+	</form>
+	<div class="clear"></div>
+
+	<form id="form_Terminal" name="form_Terminal" action="" method="post" enctype="multipart/form-data">
+	    <fieldset>
+			<legend>Результаты выполнения команд</legend>
+			<textarea id="text_response" readonly></textarea>
+			<div id="b_Clear" class="button">Очистить</div>
+		</fieldset>
+	    <fieldset>
+			<legend>Ввод команды</legend>
+            <input id="i_CommandRequest" class="i_field" type="text" value="" />
+			<div id="b_Send" class="button">Выполнить</div>
+	    </fieldset>
+	</form>
+
+</body>
+</html>

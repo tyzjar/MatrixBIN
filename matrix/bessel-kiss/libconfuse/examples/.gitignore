@@ -1,0 +1,14 @@
+*.o
+*.exe
+.deps
+.libs
+cfgtest
+reread
+simple
+simple.conf.out
+test.conf.out
+ftpconf
+cli
+nested
+deprecated
+addsec

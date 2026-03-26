@@ -1,0 +1,60 @@
+/*
+ * This is a sample devdrvd config
+ *
+ */
+
+listen-on=0.0.0.0
+port=6000
+cport=6001
+
+// real com port scale
+scale 0 {
+    ip=192.168.1.11
+    port=5000
+    cport=5001
+
+    device {
+        device="/dev/ttyS0"
+        baudrate=115200
+        parity=none
+        stop-bits=1
+        data-bits=8
+    }
+}
+
+scale 1 {
+    ip=192.168.1.11
+    port=5002
+    cport=5003
+
+    device {
+        device="/dev/ttyS1"
+        baudrate=115200
+        parity=none
+        stop-bits=1
+        data-bits=8
+    }
+}
+
+// ip address raw tcp scale
+// scale 1 {
+//    ip="localhost"
+//    port=5000
+//    cport=5001
+//    address {
+//        ip=192.168.172.112
+//        port=4001
+//    }
+//}
+
+// gpio client configuration
+gpio 0 {
+    ip=192.168.1.11
+    port=1500
+    cport=7001
+
+    device {
+        gpio-in=0:7
+        gpio-out=8:11
+    }
+}

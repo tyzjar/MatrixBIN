@@ -1,0 +1,1 @@
+/usr/bin/c++ -fPIC -shared -Wl,-soname,libmosquittopp.so.1 -o libmosquittopp.so.2.0.15 CMakeFiles/mosquittopp.dir/mosquittopp.cpp.o   -L/home/sergey/Programming/Kemek/matrix/mosquitto-2.0.15/build/lib  -Wl,-rpath,/home/sergey/Programming/Kemek/matrix/mosquitto-2.0.15/build/lib: ../libmosquitto.so.2.0.15 -lssl -lcrypto -lpthread -lrt 

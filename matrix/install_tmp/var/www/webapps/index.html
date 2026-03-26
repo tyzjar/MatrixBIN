@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Вес</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="description" content="Вес" />
+	<meta name="keywords" content="Вес" />
+        <link rel="shortcut icon" href="/images/matrix_logo.png" type="image/x-icon">
+        <link rel="stylesheet" href="css/scale.css">
+	<script src="scripts/jquery-3.7.1.min.js"></script>
+	<script src="scripts/paho-mqtt.js"></script>	
+	<script src="scripts/scale.js"></script>	
+</head>
+
+<body>
+	<div id="id_scale">
+		<div id="id_range_info">
+			<div id="id_range_number" class="range_info">Диап.: W<span>1</span></div>
+			<div id="id_range_max" class="range_info">Max: <span>200000</span> <span>кг</span></div>
+			<div id="id_range_min" class="range_info">Min: <span>100000</span> <span>кг</span></div>
+			<div id="id_range_discreteness" class="range_info">e=d= <span>100</span> <span>кг</span></div>
+		</div>
+		<div class="clear"></div>
+		<div id="id_weight_info">
+			<div id="id_stability" class="weight_info"><span>~</span></div>
+			<div id="id_weight" class="weight_info"><span>000000</span></div>
+			<div id="id_weight_type" class="weight_info"><span>Брутто</span></div>
+			<div id="id_weight_unit" class="weight_info"><pre><span>кг</span></pre></div>
+		</div>
+		<div class="clear"></div>
+		<div id="id_buttons_info">
+			<div id="b_x10" class="button">Х10</div>
+			<div id="b_set_zero" class="button">>0<</div>
+			<div id="b_tare" class="button">Т/С</div>
+		</div>
+		<div class="clear"></div>
+		<div class="msg_list">
+			<ul id="id_msg_list">
+			</ul>
+		</div>
+		<div id="b_clean" class="button">Очистить</div>
+		
+	</div>
+
+
+</body>
+
+</html>
